@@ -19,10 +19,11 @@ class Settings(BaseSettings):
     @property
     def ASYNC_DATABASE_URL(self) -> str:
         if self.DATABASE_URL:
-            # Replace database scheme for asyncpg driver
-            url = self.DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://")
-            url = url.replace("postgres://", "postgresql+asyncpg://")
-            return url
+            # Garante que qualquer prefixo (postgres://, postgres+asyncpg://, etc) 
+            # seja convertido para postgresql+asyncpg://
+            if "://" in self.DATABASE_URL:
+                _, rest = self.DATABASE_URL.split("://", 1)
+                return f"postgresql+asyncpg://{rest}"
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
     model_config = ConfigDict(case_sensitive=True, env_file=".env")
