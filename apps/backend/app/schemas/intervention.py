@@ -1,8 +1,10 @@
 import uuid
 from datetime import datetime
-from typing import Dict, Any
+from typing import Optional, Dict, Any
 from pydantic import BaseModel
 from app.models.enums import InterventionStatus
+
+from datetime import datetime
 
 class InterventionBase(BaseModel):
     title: str
@@ -10,6 +12,13 @@ class InterventionBase(BaseModel):
     status: InterventionStatus = InterventionStatus.PLANNED
     cost_estimate: float = 0.0
     area_id: uuid.UUID
+    
+    # Novos campos operacionais
+    responsible_agency: Optional[str] = None
+    priority: str = "MEDIUM"
+    started_at: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
+    incident_id: Optional[uuid.UUID] = None
 
 # Entrada de dados GeoJSON Point
 class InterventionCreate(InterventionBase):
