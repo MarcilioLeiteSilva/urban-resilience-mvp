@@ -1,18 +1,56 @@
 # Urban Resilience MVP - Monorepo
 
-## Folder Structure
-- `apps/`: Main applications (frontend, backend)
-  - `frontend/`: Next.js app with TypeScript, Tailwind, and MapLibre.
-  - `backend/`: FastAPI app with Python, SQLAlchemy, and Pydantic.
-- `packages/`: Shared packages (types, config)
-- `infra/`: Infrastructure files (docker, easypanel, scripts)
-- `docs/`: Documentation (architecture, decisions, api, setup)
-- `.github/`: CI/CD workflows
+## 📁 Estrutura do Projeto
 
-## Local Development
-Detailed setup instructions can be found in `docs/setup/dev-guide.md`.
+- `apps/`: Aplicações principais da plataforma
+  - `frontend/`: Dashboard **Next.js** + MapLibre para renderização de mapa.
+  - `backend/`: API **FastAPI** + PostGIS para lógica espacial e orquestração.
+- `infra/`: Orquestradores locais e deploys.
+  - `docker/`: contém `docker-compose.yml` local.
+- `docs/`: Documentações de setup e arquitetura.
 
-### Core Requirements
-- Docker & Docker Compose
-- Node.js (Latest LTS recommended)
-- Python 3.10+
+---
+
+## 🚀 Como Rodar Localmente (Docker)
+
+A forma mais rápida de validar o ecossistema é utilizando o Docker Compose de desenvolvimento:
+
+1. Acesse o diretório de infraestrutura:
+   ```bash
+   cd infra/docker
+   ```
+
+2. Suba os containers com build process:
+   ```bash
+   docker-compose up --build
+   ```
+
+Acesse:
+- **Dashboard**: [http://localhost:3000](http://localhost:3000)
+- **API Health**: [http://localhost:8000/health](http://localhost:8000/health)
+
+---
+
+## 🌐 Deploy com Easypanel (Instruções)
+
+Para realizar o deploy e validar a esteira GitHub -> VPS no seu painel Easypanel, crie **dois aplicativos individuais**:
+
+### 1. Serviço: Backend
+- **Tipo**: Application
+- **Source**: GitHub
+  - **Repository**: `MarcilioLeiteSilva/urban-resilience-mvp`
+  - **Branch**: `main`
+- **Configuradores de Build**:
+  - **Dockerfile Path**: `apps/backend/Dockerfile`
+- **Rede / Networking**:
+  - **Port**: `8000`
+
+### 2. Serviço: Frontend
+- **Tipo**: Application
+- **Source**: GitHub
+  - **Repository**: `MarcilioLeiteSilva/urban-resilience-mvp`
+  - **Branch**: `main`
+- **Configuradores de Build**:
+  - **Dockerfile Path**: `apps/frontend/Dockerfile`
+- **Rede / Networking**:
+  - **Port**: `3000`
