@@ -54,3 +54,24 @@ Para realizar o deploy e validar a esteira GitHub -> VPS no seu painel Easypanel
   - **Dockerfile Path**: `apps/frontend/Dockerfile`
 - **Rede / Networking**:
   - **Port**: `3000`
+
+---
+
+## ⚙️ Variáveis de Ambiente (Easypanel)
+
+Para que a comunicação funcione perfeitamente na sua VPS, configure as seguintes variáveis nos seus cards administrativos:
+
+### 1. No card do Backend
+- `DATABASE_URL`: Caminho absoluto do banco. Ex: `postgresql://user:pass@postgis-service:5432/app`
+- `CORS_ORIGINS`: Endereço público do Frontend (sem barra no final) separado por vírgula.  
+  Ex: `https://urban-resiliense-frontend.[...].easypanel.host`. Default: `*`
+
+> [!IMPORTANT]
+> O serviço de Banco de Dados no Easypanel **DEVE** rodar sob uma imagem que traga o PostGIS!  
+> Imagem recomendada: **`postgis/postgis:15-3.3-alpine`**.
+
+### 2. No card do Frontend
+- `NEXT_PUBLIC_API_URL`: Endereço público do seu backend.  
+  Ex: `https://urban-resiliense-backend.[...].easypanel.host/api/v1`
+
+---

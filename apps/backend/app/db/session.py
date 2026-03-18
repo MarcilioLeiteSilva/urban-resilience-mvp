@@ -3,7 +3,6 @@ from app.core.config import settings
 from typing import AsyncGenerator
 
 engine = create_async_engine(settings.ASYNC_DATABASE_URL, echo=False)
-print(f"DATABASE DIAGNOSTIC: ASYNC_DATABASE_URL scheme is {settings.ASYNC_DATABASE_URL.split('://')[0]}")
 
 SessionLocal = async_sessionmaker(
     bind=engine,

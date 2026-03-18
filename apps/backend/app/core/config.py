@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     POSTGRES_DB: str = "urban_resilience"
     POSTGRES_PORT: str = "5432"
     
+    # CORS Settings (comma-separated origins)
+    CORS_ORIGINS: str = "*"
+    
     @property
     def ASYNC_DATABASE_URL(self) -> str:
         if self.DATABASE_URL:

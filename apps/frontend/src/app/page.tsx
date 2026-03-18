@@ -7,9 +7,15 @@ if (typeof window === 'undefined') {
 }
 
 export default async function Home() {
-  // Lê a variável de ambiente DINAMICAMENTE no runtime do contêiner (Server-Side)
-  // Isso evita que o Next.js "chumbe" o localhost no pacote JS estático do client-side na build.
-  let apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+  let apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  
+  if (!apiUrl) {
+       if (process.env.NODE_ENV === 'production') {
+            throw new Error("Variavel de ambiente NEXT_PUBLIC_API_URL nao configurada em Producao!");
+       }
+       // Fallback seguro apenas para local dev
+       apiUrl = 'http://localhost:8000/api/v1';
+  }
   
   // Garante o sufixo /api/v1 se o usuário não inseriu no Easypanel
   if (apiUrl && !apiUrl.endsWith('/api/v1') && !apiUrl.endsWith('/api/v1/')) {
