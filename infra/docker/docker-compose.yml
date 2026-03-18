@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgis/postgis:15-3.4
+    container_name: urban-resilience-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: urban_resilience
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - urban-net
+
+  backend:
+    build:
+      context: ../..
+      dockerfile: apps/backend/Dockerfile
+    container_name: urban-resilience-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_SERVER=db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=urban_resilience
+    depends_on:
+      - db
+    networks:
+      - urban-net
+
+  frontend:
+    build:
+      context: ../..
+      dockerfile: apps/frontend/Dockerfile
+    container_name: urban-resilience-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - urban-net
+
+volumes:
+  postgres_data:
+
+networks:
+  urban-net:
+    driver: bridge
