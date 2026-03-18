@@ -14,9 +14,14 @@ async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         try:
             await conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis;"))
-            await conn.run_sync(Base.metadata.create_all)
         except Exception as e:
-            print(f"Database initialization error: {e}")
+            print(f"PostGIS activation warning (maybe already loaded or permission issue): {e}")
+
+        try:
+            await conn.run_sync(Base.metadata.create_all)
+            print("Database tables verified/created.")
+        except Exception as e:
+            print(f"Database tables creation error: {e}")
 
     # Seed initial items if empty for validation tests
     async with SessionLocal() as session:
