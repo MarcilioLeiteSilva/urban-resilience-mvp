@@ -14,10 +14,12 @@ async def list_areas(limit: int = 100, db: AsyncSession = Depends(get_db)):
     areas = await service.list_areas(limit=limit)
     return areas
 
-@router.get("/{id}", response_model=AreaInDB)
+from app.schemas.area import AreaCreate, AreaInDB, AreaDetailedInDB
+
+@router.get("/{id}", response_model=AreaDetailedInDB)
 async def get_area(id: uuid.UUID, db: AsyncSession = Depends(get_db)):
     service = AreaService(db)
-    area = await service.get_area(id)
+    area = await service.get_area_detailed(id)
     if not area:
         raise HTTPException(status_code=404, detail="Area not found or loaded")
     return area

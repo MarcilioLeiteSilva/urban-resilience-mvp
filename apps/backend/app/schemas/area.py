@@ -26,5 +26,15 @@ class AreaInDB(AreaBase):
     # Saída como Dicionário GeoJSON para o Frontend
     geometry: Optional[Dict[str, Any]] = None
 
+from app.schemas.incident import IncidentInDB
+from app.schemas.intervention import InterventionInDB
+from app.schemas.risk_score import RiskScoreInDB
+
+class AreaDetailedInDB(AreaInDB):
+    incidents: list[IncidentInDB] = []
+    interventions: list[InterventionInDB] = []
+    recent_risk_scores: list[RiskScoreInDB] = []
+    reports_count: int = 0
+
     class Config:
         from_attributes = True
