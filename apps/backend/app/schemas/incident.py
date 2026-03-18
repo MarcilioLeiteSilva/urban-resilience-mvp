@@ -10,6 +10,7 @@ class IncidentBase(BaseModel):
     type: IncidentType
     severity: IncidentSeverity = IncidentSeverity.MEDIUM
     area_id: uuid.UUID
+    report_id: uuid.UUID | None = None  # Link com o relato original
 
 # Entrada de dados em GeoJSON para pontos
 class IncidentCreate(IncidentBase):

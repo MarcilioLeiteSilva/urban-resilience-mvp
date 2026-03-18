@@ -19,7 +19,11 @@ class Incident(Base):
     # Relacionamentos
     area_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("areas.id"), nullable=False)
     reporter_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=True)
+    
+    # Vínculo opcional com o report original que gerou este incidente
+    report_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("community_reports.id"), nullable=True)
 
     # ORM Relations
     area = relationship("Area", back_populates="incidents")
     reporter = relationship("User")
+    original_report = relationship("CommunityReport")
