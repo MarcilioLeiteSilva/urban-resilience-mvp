@@ -10,6 +10,10 @@ RUN npm install
 # Copy app source files
 COPY apps/frontend/ .
 
+# Permite que o Next.js leia a variável de ambiente estática NA HORA DA BUILD
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 # Build Step
 # Note: Next.js reads Next.config style inside here
 RUN npm run build
