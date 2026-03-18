@@ -29,13 +29,21 @@ async def lifespan(app: FastAPI):
                 print("Seeding database with initial areas...")
                 await service.create_area(AreaCreate(
                     name="Centro", 
-                    geom_wkt="POLYGON((-43.1811 -22.9064, -43.1795 -22.9035, -43.1762 -22.9056, -43.1811 -22.9064))", 
-                    description="Área central sujeita a alagamentos rápidos."
+                    city="Rio de Janeiro",
+                    description="Área central sujeita a alagamentos rápidos.",
+                    geometry={
+                        "type": "Polygon",
+                        "coordinates": [[[-43.1811, -22.9064], [-43.1795, -22.9035], [-43.1762, -22.9056], [-43.1811, -22.9064]]]
+                    }
                 ))
                 await service.create_area(AreaCreate(
                     name="Barra", 
-                    geom_wkt="POLYGON((-43.3524 -22.9997, -43.3424 -22.9997, -43.3424 -23.0031, -43.3524 -22.9997))", 
-                    description="Zona costeira de alerta médica."
+                    city="Rio de Janeiro",
+                    description="Zona costeira de alerta médica.",
+                    geometry={
+                        "type": "Polygon",
+                        "coordinates": [[[-43.3524, -22.9997], [-43.3424, -22.9997], [-43.3424, -23.0031], [-43.3524, -22.9997]]]
+                    }
                 ))
         except Exception as e:
             print(f"Seeding error: {e}")

@@ -24,9 +24,13 @@ class RiskScoringService:
         if any(keyword in description for keyword in keywords_risk):
              score += SCORE_BOOST_FLOOD_WORDS
              
-        # 2. Atributos geométricos simples (baseados na string WKT do polígono)
-        # Conta a quantidade de vértices estimando pelas vírgulas
-        vertex_count = obj_in.geom_wkt.count(",") + 1
+        # 2. Atributos geométricos simples (baseados na lista de coordenadas do GeoJSON)
+        try:
+            coords = obj_in.geometry.get("coordinates", [[]])
+            # Se for Polygon, a primeira lista contém os pontos
+            vertex_count = len(coords[0]) if coords else 0
+        except Exception:
+            vertex_count = 0
         if vertex_count > VETOR_COUNT_LARGE_THRESHOLD:
             score += SCORE_BOOST_LARGE_GEOM
 

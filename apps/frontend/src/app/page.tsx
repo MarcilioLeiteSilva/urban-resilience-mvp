@@ -1,17 +1,31 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import AreaList from '@/components/risk/AreaList';
+import { fetchAreas, Area } from '@/services/areas';
 
 const MapContainer = dynamic(
   () => import('@/components/map/MapContainer'),
   { 
     ssr: false, 
-    loading: () => <div className="animate-pulse bg-gray-200 w-full h-full rounded-lg flex items-center justify-center text-slate-500">Caregando Mapa...</div> 
+    loading: () => <div className="animate-pulse bg-gray-200 w-full h-full rounded-lg flex items-center justify-center text-slate-500">Carregando Mapa...</div> 
   }
 );
 
 export default function Home() {
+  const [areas, setAreas] = useState<Area[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+     async function load() {
+         const data = await fetchAreas();
+         setAreas(data);
+         setLoading(false);
+     }
+     load();
+  }, []);
+
   return (
     <div className="flex bg-slate-50 h-screen w-screen overflow-hidden">
       {/* Sidebar dashboard lists */}
@@ -21,13 +35,13 @@ export default function Home() {
               <p className="text-sm text-slate-500">Monitoramento de Riscos</p>
           </div>
           <div className="flex-1 overflow-y-auto">
-             <AreaList />
+             <AreaList areas={areas} loading={loading} />
           </div>
       </aside>
 
       {/* Viewport for Map */}
       <main className="flex-1 h-full p-6">
-          <MapContainer />
+          <MapContainer areas={areas} />
       </main>
     </div>
   );

@@ -7,6 +7,7 @@ class Area(Base):
     __tablename__ = "areas"
 
     name: Mapped[str] = mapped_column(String(100), index=True)
+    city: Mapped[str] = mapped_column(String(100), index=True)
     description: Mapped[str | None] = mapped_column(String(500), nullable=True)
     
     # PostGIS Geometry field (Polygon, SRID 4326 - WGS84)

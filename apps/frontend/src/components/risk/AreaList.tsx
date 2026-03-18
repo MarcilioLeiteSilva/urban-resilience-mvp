@@ -1,29 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { AlertCircle } from 'lucide-react';
-import { fetchAreas, Area } from '@/services/areas';
+import { Area } from '@/services/areas';
 
-export default function AreaList() {
-  const [areas, setAreas] = useState<Area[]>([]);
-  const [loading, setLoading] = useState(true);
+interface AreaListProps {
+  areas: Area[];
+  loading: boolean;
+}
 
-  useEffect(() => {
-     async function load() {
-         const data = await fetchAreas();
-         setAreas(data);
-         setLoading(false);
-     }
-     load();
-  }, []);
-
+export default function AreaList({ areas, loading }: AreaListProps) {
   // Dados mockados de fallback para o mapa se a API estiver limpa/vazia
   const placeholders = [
     { id: '1', name: 'Centro (Exemplo)', risk_score: 0.82, flood_risk_category: 'HIGH' },
     { id: '2', name: 'Copacabana (Exemplo)', risk_score: 0.45, flood_risk_category: 'MEDIUM' },
   ];
 
-  const currentList = areas.length > 0 ? areas : placeholders as unknown as Area[];
+  const currentList = areas && areas.length > 0 ? areas : placeholders as unknown as Area[];
 
   if (loading) {
       return (
@@ -37,7 +29,7 @@ export default function AreaList() {
     <div className="bg-white rounded-lg shadow-md p-4 h-full border">
       <h2 className="text-xl font-bold mb-1 text-slate-800">Áreas</h2>
       <p className="text-xs text-slate-400 mb-4">
-          {areas.length > 0 ? '🟢 Conectado à API' : '⚪ Usando dados Locais (Vazio no DB)'}
+          {areas && areas.length > 0 ? '🟢 Conectado à API' : '⚪ Usando dados Locais (Vazio no DB)'}
       </p>
       
       <ul className="space-y-3">
@@ -45,7 +37,7 @@ export default function AreaList() {
           <li key={area.id} className="p-3 border rounded-lg hover:bg-slate-50 cursor-pointer flex justify-between items-center transition">
             <div>
               <span className="font-medium text-slate-800">{area.name}</span>
-              <p className="text-sm text-slate-500">Score de Risco: {area.risk_score.toFixed(2)}</p>
+              <p className="text-sm text-slate-500">Score de Risco: {area.risk_score ? area.risk_score.toFixed(2) : '0.00'}</p>
             </div>
             {area.flood_risk_category === 'HIGH' && (
               <div className="flex items-center text-red-500 text-xs font-semibold gap-1">
