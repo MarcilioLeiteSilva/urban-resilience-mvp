@@ -8,7 +8,7 @@ import uuid
 
 router = APIRouter()
 
-@router.get("/", response_model=List[AreaInDB])
+@router.get("", response_model=List[AreaInDB])
 async def list_areas(limit: int = 100, db: AsyncSession = Depends(get_db)):
     service = AreaService(db)
     areas = await service.list_areas(limit=limit)
@@ -22,7 +22,7 @@ async def get_area(id: uuid.UUID, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Area not found or loaded")
     return area
 
-@router.post("/", response_model=AreaInDB)
+@router.post("", response_model=AreaInDB)
 async def create_area(obj_in: AreaCreate, db: AsyncSession = Depends(get_db)):
     service = AreaService(db)
     try:
