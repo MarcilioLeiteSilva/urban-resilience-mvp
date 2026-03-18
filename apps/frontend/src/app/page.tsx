@@ -1,6 +1,11 @@
 import DashboardView from '@/components/layout/DashboardView';
 import { Area } from '@/services/areas';
 
+// Ignora bloqueios de certificado self-signed em ambiente Node (Easypanel temporário)
+if (typeof window === 'undefined') {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+}
+
 export default async function Home() {
   // Lê a variável de ambiente DINAMICAMENTE no runtime do contêiner (Server-Side)
   // Isso evita que o Next.js "chumbe" o localhost no pacote JS estático do client-side na build.
