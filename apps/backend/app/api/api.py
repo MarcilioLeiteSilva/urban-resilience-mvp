@@ -1,3 +1,4 @@
+from fastapi import APIRouter
 from app.api.routes import areas, reports, incidents, interventions, dashboard
 
 api_router = APIRouter()
