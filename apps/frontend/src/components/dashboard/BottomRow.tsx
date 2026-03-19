@@ -1,11 +1,9 @@
-export default function BottomRow() {
-  const recentReports = [
-    { id: '0034', desc: 'Acúmulo de lixo na boca de bueiro provocando transbordamento', area: 'Centro', status: 'RECEIVED', time: '10m' },
-    { id: '0033', desc: 'Rachadura em muro de contenção na encosta norte', area: 'Tijuca', status: 'VALIDATED', time: '45m' },
-    { id: '0032', desc: 'Pista escorregadia por óleo derramado após chuva', area: 'Lapa', status: 'RECEIVED', time: '1h' },
-    { id: '0031', desc: 'Queda de galho de grande porte obstruindo calçada', area: 'Barra', status: 'VALIDATED', time: '3h' }
-  ];
+export interface BottomRowProps {
+  reports?: Array<{ id: string; description: string; status: string; created_at: string; area?: string }>;
+}
 
+export default function BottomRow({ reports = [] }: BottomRowProps) {
+  // Ranking fake baseado nas áreas (mantido para visual)
   const rankingAreas = [
     { name: 'Centro', score: 85, trend: 'up' },
     { name: 'Barra', score: 72, trend: 'down' },
@@ -40,18 +38,20 @@ export default function BottomRow() {
                           </tr>
                      </thead>
                      <tbody className="divide-y divide-slate-50 text-xs">
-                          {recentReports.map((report) => (
+                          {reports.map((report) => (
                                <tr key={report.id} className="hover:bg-slate-50 transition">
-                                    <td className="py-3 px-3 font-semibold text-slate-800 max-w-xs truncate">{report.desc}</td>
-                                    <td className="py-3 px-3 text-slate-500">{report.area}</td>
+                                    <td className="py-3 px-3 font-semibold text-slate-800 max-w-xs truncate">{report.description}</td>
+                                    <td className="py-3 px-3 text-slate-500">{report.area || 'Geral'}</td>
                                     <td className="py-3 px-3">
                                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                                              report.status === 'VALIDATED' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
+                                              ['VALIDATED', 'RESOLVED'].includes(report.status) ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
                                          }`}>
                                               {report.status}
                                          </span>
                                     </td>
-                                    <td className="py-3 px-3 text-right text-slate-400">{report.time}</td>
+                                    <td className="py-3 px-3 text-right text-slate-400">
+                                         {new Date(report.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                    </td>
                                </tr>
                           ))}
                      </tbody>

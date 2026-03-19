@@ -1,16 +1,10 @@
-export default function SidebarPanel() {
-  const criticalAreas = [
-    { id: 1, name: 'Centro', risk: 8.5, category: 'HIGH' },
-    { id: 2, name: 'Barra', risk: 7.2, category: 'HIGH' },
-    { id: 3, name: 'Tijuca', risk: 6.8, category: 'MEDIUM' }
-  ];
+export interface SidebarPanelProps {
+  criticalAreas?: Array<{ id: string; name: string; risk_score: number; flood_risk_category: string }>;
+  events?: Array<{ id: string; description: string; created_at: string; status: string }>;
+  onAreaClick?: (id: string) => void;
+}
 
-  const events = [
-    { id: 1, text: 'Novo Relato: Alagamento na Av. Rio Branco', time: '10 min', type: 'report' },
-    { id: 2, text: 'Obra Iniciada: Contenção de encosta no Morro tal', time: '45 min', type: 'intervention' },
-    { id: 3, text: 'Incidente Resolvido: Árvore removida', time: '2h', type: 'incident' }
-  ];
-
+export default function SidebarPanel({ criticalAreas = [], events = [], onAreaClick }: SidebarPanelProps) {
   const badgeColors: Record<string, string> = {
     HIGH: 'bg-red-100 text-red-800 border-red-200',
     MEDIUM: 'bg-amber-100 text-amber-800 border-amber-200',
@@ -39,13 +33,13 @@ export default function SidebarPanel() {
            <h4 className="text-xs font-black text-slate-800 uppercase tracking-wide mb-3">Top Áreas Críticas</h4>
            <div className="space-y-2">
                 {criticalAreas.map((area) => (
-                     <div key={area.id} className="flex items-center justify-between p-3 bg-white border border-slate-100 rounded-xl shadow-sm hover:border-slate-200 transition">
+                     <div key={area.id} onClick={() => onAreaClick && onAreaClick(area.id)} className="flex items-center justify-between p-3 bg-white border border-slate-100 rounded-xl shadow-sm hover:border-slate-200 transition cursor-pointer">
                           <div>
                                <p className="text-sm font-bold text-slate-900">{area.name}</p>
-                               <p className="text-[10px] text-slate-400">Score de Risco: {area.risk}</p>
+                               <p className="text-[10px] text-slate-400">Score de Risco: {area.risk_score.toFixed(1)}</p>
                           </div>
-                          <span className={`text-[9px] font-black px-1.5 py-0.5 rounded border ${badgeColors[area.category]}`}>
-                               {area.category}
+                          <span className={`text-[9px] font-black px-1.5 py-0.5 rounded border ${badgeColors[area.flood_risk_category] || 'bg-slate-50'}`}>
+                               {area.flood_risk_category}
                           </span>
                      </div>
                 ))}
@@ -60,11 +54,11 @@ export default function SidebarPanel() {
                      <div key={event.id} className="flex gap-3 pl-5 relative">
                           {/* Dot item */}
                           <div className={`absolute left-0 top-1.5 h-4 w-4 rounded-full border-2 border-white flex items-center justify-center ${
-                               event.type === 'report' ? 'bg-amber-400' : event.type === 'intervention' ? 'bg-blue-500' : 'bg-green-500'
+                               ['VALIDATED', 'RESOLVED'].includes(event.status) ? 'bg-green-500' : 'bg-amber-400'
                           }`}></div>
                           <div>
-                               <p className="text-xs font-medium text-slate-700 leading-tight">{event.text}</p>
-                               <p className="text-[10px] text-slate-400 mt-0.5">{event.time} atrás</p>
+                               <p className="text-xs font-medium text-slate-700 leading-tight truncate max-w-[250px]">{event.description}</p>
+                               <p className="text-[10px] text-slate-400 mt-0.5">{new Date(event.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p>
                           </div>
                      </div>
                 ))}

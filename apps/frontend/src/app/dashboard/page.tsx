@@ -7,6 +7,7 @@ import SidebarPanel from '@/components/dashboard/SidebarPanel';
 import BottomRow from '@/components/dashboard/BottomRow';
 import AreaDetailDrawer from '@/components/dashboard/AreaDetailDrawer';
 import FilterBar from '@/components/dashboard/FilterBar';
+import { useDashboard } from '@/hooks/useDashboard';
 
 const AnalyticsRow = dynamic(
   () => import('@/components/dashboard/AnalyticsRow'),
@@ -14,20 +15,26 @@ const AnalyticsRow = dynamic(
 );
 
 export default function DashboardPage() {
+  const { summary, criticalAreas, recentReports, loading, error } = useDashboard();
+  
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [selectedArea, setSelectedArea] = useState<any>(null);
 
-  const handleOpenDrawer = (area?: any) => {
-    setSelectedArea(area);
+  const handleOpenDrawer = (areaId?: string) => {
+    setSelectedArea({ id: areaId }); // O Drawer mock já tem os dados de exibição em fallback
     setDrawerOpen(true);
   };
+
   const kpis = [
-    { label: 'Áreas Monitoradas', value: 12, delta: { value: 1, type: 'increase', text: 'mês' } },
-    { label: 'Áreas Críticas', value: 3, delta: { value: 0, type: 'neutral', text: 'igual' } },
-    { label: 'Incidentes Abertos', value: 7, delta: { value: 2, type: 'increase', text: 'hoje' } },
-    { label: 'Obras/Intervenções', value: 4, delta: { value: 1, type: 'decrease', text: 'concluído' } },
-    { label: 'Relatos da Semana', value: 45, delta: { value: 12, type: 'increase', text: '24h' } },
+    { label: 'Áreas Monitoradas', value: summary?.total_areas || 0, delta: { value: 0, type: 'neutral', text: 'estável' } },
+    { label: 'Áreas Críticas', value: summary?.critical_areas || 0, delta: { value: 0, type: 'neutral', text: 'igual' } },
+    { label: 'Incidentes Abertos', value: summary?.open_incidents_count || 0, delta: { value: 0, type: 'neutral', text: 'hoje' } },
+    { label: 'Obras/Intervenções', value: summary?.ongoing_interventions_count || 0, delta: { value: 0, type: 'neutral', text: 'concluído' } },
+    { label: 'Relatos Recentes', value: summary?.recent_reports_count || 0, delta: { value: 0, type: 'neutral', text: '24h' } },
   ];
+
+  if (loading) return <div className="h-screen w-full flex flex-col items-center justify-center bg-slate-50 text-slate-400 text-sm font-bold animate-pulse">Carregando painel analítico...</div>;
+  if (error) return <div className="h-screen w-full flex flex-col items-center justify-center bg-slate-50 text-red-500 text-sm font-bold">Erro ao carregar Dashboard: {error}</div>;
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900">
@@ -79,7 +86,7 @@ export default function DashboardPage() {
 
                 {/* Painel Lateral (4 colunas) - INJETADO */}
                 <div className="col-span-12 lg:col-span-4 bg-white rounded-2xl border border-slate-100 shadow-sm p-4 overflow-y-auto">
-                     <SidebarPanel />
+                     <SidebarPanel criticalAreas={criticalAreas || []} events={recentReports || []} onAreaClick={handleOpenDrawer} />
                 </div>
            </div>
 
@@ -87,7 +94,7 @@ export default function DashboardPage() {
            <AnalyticsRow />
 
            {/* Row 4: Bottom Row (Tabelas) */}
-           <BottomRow />
+           <BottomRow reports={recentReports || []} />
 
       </main>
 
