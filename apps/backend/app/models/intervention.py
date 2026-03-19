@@ -5,6 +5,8 @@ from geoalchemy2 import Geometry
 from app.models.base_model import Base
 from app.models.enums import InterventionStatus
 
+from datetime import datetime
+
 class Intervention(Base):
     __tablename__ = "interventions"
 
@@ -18,8 +20,8 @@ class Intervention(Base):
     responsible_agency: Mapped[str | None] = mapped_column(String(100), nullable=True)
     priority: Mapped[str] = mapped_column(String(20), default="MEDIUM") # LOW, MEDIUM, HIGH, CRITICAL
     
-    started_at: Mapped[any | None] = mapped_column(DateTime, nullable=True)
-    completed_at: Mapped[any | None] = mapped_column(DateTime, nullable=True)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     # PostGIS Point da obra
     point: Mapped[any] = mapped_column(Geometry("POINT", srid=4326), nullable=False)
