@@ -1,4 +1,5 @@
 import KpiCard from '@/components/dashboard/KpiCard';
+import SidebarPanel from '@/components/dashboard/SidebarPanel';
 
 export default function DashboardPage() {
   const kpis = [
@@ -46,7 +47,7 @@ export default function DashboardPage() {
            </div>
 
            {/* Row 2: Map + Sidebar Panel */}
-           <div className="grid grid-cols-12 gap-6 h-[450px]">
+           <div className="grid grid-cols-12 gap-6 h-[500px]">
                 {/* Mapa (8 colunas) */}
                 <div className="col-span-12 lg:col-span-8 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden relative">
                      <div className="absolute inset-0 bg-slate-100/50 flex items-center justify-center text-slate-400 text-sm animate-pulse">
@@ -54,14 +55,9 @@ export default function DashboardPage() {
                      </div>
                 </div>
 
-                {/* Painel Lateral (4 colunas) */}
-                <div className="col-span-12 lg:col-span-4 bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex flex-col">
-                     <div className="h-4 w-32 bg-slate-100 rounded mb-4"></div>
-                     <div className="flex-1 space-y-3">
-                          {[1, 2, 3, 4].map((item) => (
-                               <div key={item} className="h-14 bg-slate-50 rounded-lg animate-pulse"></div>
-                          ))}
-                     </div>
+                {/* Painel Lateral (4 colunas) - INJETADO */}
+                <div className="col-span-12 lg:col-span-4 bg-white rounded-2xl border border-slate-100 shadow-sm p-4 overflow-y-auto">
+                     <SidebarPanel />
                 </div>
            </div>
 
