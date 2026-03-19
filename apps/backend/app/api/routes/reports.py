@@ -23,11 +23,15 @@ async def get_report(id: uuid.UUID, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Report not found")
     return report
 
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+
 @router.post("", response_model=CommunityReportInDB)
-async def create_report(obj_in: CommunityReportCreate, db: AsyncSession = Depends(get_db)):
+async def create_report(obj_in: CommunityReportCreate, background_tasks: BackgroundTasks, db: AsyncSession = Depends(get_db)):
     service = ReportService(db)
     try:
         report = await service.create_report(obj_in)
+        # Dispara análise de IA em background para nao travar o usuário
+        background_tasks.add_task(service.process_report_with_ai, report["id"])
         return report
     except Exception as e:
          raise HTTPException(status_code=400, detail=f"Report creation failed: {str(e)}")

@@ -38,3 +38,22 @@ class ReportService:
         if db_obj:
             return await self.repo.get(id)
         return None
+
+    async def process_report_with_ai(self, report_id: UUID):
+        from app.services.ai.factory import get_ai_service
+        from app.models.report import CommunityReport
+        from sqlalchemy import select
+
+        stmt = select(CommunityReport).where(CommunityReport.id == report_id)
+        result = await self.repo.db.execute(stmt)
+        report = result.scalar_one_or_none()
+        if not report:
+            return
+
+        try:
+            ai = get_ai_service()
+            analysis = await ai.analyze_report(report.description)
+            report.ai_metadata = analysis
+            await self.repo.db.commit()
+        except Exception as e:
+            print(f"AI Error: {e}")
