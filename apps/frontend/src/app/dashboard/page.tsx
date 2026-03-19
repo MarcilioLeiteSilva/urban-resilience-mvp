@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
 import KpiCard from '@/components/dashboard/KpiCard';
 import SidebarPanel from '@/components/dashboard/SidebarPanel';
+import BottomRow from '@/components/dashboard/BottomRow';
 
 const AnalyticsRow = dynamic(
   () => import('@/components/dashboard/AnalyticsRow'),
@@ -71,14 +72,7 @@ export default function DashboardPage() {
            <AnalyticsRow />
 
            {/* Row 4: Bottom Row (Tabelas) */}
-           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-                <div className="h-4 w-40 bg-slate-100 rounded mb-4"></div>
-                <div className="space-y-4">
-                     {[1, 2, 3].map((item) => (
-                          <div key={item} className="h-12 bg-slate-50 rounded-lg animate-pulse"></div>
-                     ))}
-                </div>
-           </div>
+           <BottomRow />
 
       </main>
     </div>
