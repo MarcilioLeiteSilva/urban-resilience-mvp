@@ -17,7 +17,8 @@ class Settings(BaseSettings):
     POSTGRES_PORT: str = "5432"
     
     # CORS Settings (comma-separated origins)
-    CORS_ORIGINS: str = "*"
+    CORS_ORIGINS: str = "http://localhost:3000"
+    LOG_LEVEL: str = "INFO"
     
     @property
     def ASYNC_DATABASE_URL(self) -> str:

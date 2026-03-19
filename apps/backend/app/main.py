@@ -62,7 +62,15 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+import logging
+
 origins = [o.strip() for o in settings.CORS_ORIGINS.split(",")] if settings.CORS_ORIGINS else []
+
+logging.basicConfig(
+    level=settings.LOG_LEVEL,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger("api")
 
 app.add_middleware(
     CORSMiddleware,
@@ -77,7 +85,15 @@ def read_root():
     return {"message": "Welcome to Urban Resilience API"}
 
 @app.get("/health")
-def health_check():
-    return {"status": "healthy"}
+async def health_check():
+    from app.db.session import SessionLocal
+    from sqlalchemy import text
+    try:
+        async with SessionLocal() as session:
+            await session.execute(text("SELECT 1;"))
+        return {"status": "healthy", "database": "connected"}
+    except Exception as e:
+        logger.error(f"Healthcheck DB Failure: {e}")
+        return {"status": "unhealthy", "database": "disconnected", "detail": str(e)}
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
