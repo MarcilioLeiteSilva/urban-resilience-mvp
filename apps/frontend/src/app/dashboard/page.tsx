@@ -1,5 +1,11 @@
+import dynamic from 'next/dynamic';
 import KpiCard from '@/components/dashboard/KpiCard';
 import SidebarPanel from '@/components/dashboard/SidebarPanel';
+
+const AnalyticsRow = dynamic(
+  () => import('@/components/dashboard/AnalyticsRow'),
+  { ssr: false, loading: () => <div className="animate-pulse bg-white h-64 rounded-2xl border border-slate-100 flex items-center justify-center text-slate-400">Puxando Gráficos...</div> }
+);
 
 export default function DashboardPage() {
   const kpis = [
@@ -62,14 +68,7 @@ export default function DashboardPage() {
            </div>
 
            {/* Row 3: Analytics Row */}
-           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[1, 2, 3].map((item) => (
-                     <div key={item} className="h-64 bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex flex-col items-center justify-center animate-pulse">
-                          <div className="h-4 w-32 bg-slate-100 rounded mb-4"></div>
-                          <div className="h-32 w-32 rounded-full border-4 border-slate-50"></div>
-                     </div>
-                ))}
-           </div>
+           <AnalyticsRow />
 
            {/* Row 4: Bottom Row (Tabelas) */}
            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
