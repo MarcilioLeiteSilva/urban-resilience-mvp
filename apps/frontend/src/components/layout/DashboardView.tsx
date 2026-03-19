@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import AreaList from '@/components/risk/AreaList';
+import AreaDetailDrawer from '@/components/layout/AreaDetailDrawer';
 import { Area } from '@/services/areas';
 
 // Importação dinâmica do mapa (Maplibre) desativando SSR para compatibilidade client-side
@@ -19,6 +21,7 @@ interface DashboardViewProps {
 }
 
 export default function DashboardView({ areas, errorMsg }: DashboardViewProps) {
+  const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
   return (
     <div className="flex bg-slate-50 h-screen w-screen overflow-hidden">
       {/* Sidebar dashboard lists */}
@@ -34,9 +37,12 @@ export default function DashboardView({ areas, errorMsg }: DashboardViewProps) {
       </aside>
 
       {/* Viewport for Map */}
-      <main className="flex-1 h-full p-6">
-          <MapContainer areas={areas} />
+      <main className="flex-1 h-full p-6 relative">
+          <MapContainer areas={areas} onAreaClick={(id) => setSelectedAreaId(id)} />
       </main>
+
+      {/* Painel lateral de Detalhes da Área */}
+      <AreaDetailDrawer areaId={selectedAreaId} onClose={() => setSelectedAreaId(null)} />
     </div>
   );
 }

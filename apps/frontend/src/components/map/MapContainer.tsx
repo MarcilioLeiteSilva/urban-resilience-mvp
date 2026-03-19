@@ -7,9 +7,10 @@ import { Area } from '@/services/areas';
 
 interface MapContainerProps {
   areas: Area[];
+  onAreaClick?: (id: string) => void;
 }
 
-export default function MapContainer({ areas }: MapContainerProps) {
+export default function MapContainer({ areas, onAreaClick }: MapContainerProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
 
@@ -43,6 +44,7 @@ export default function MapContainer({ areas }: MapContainerProps) {
           .map((a) => ({
             type: 'Feature' as const,
             properties: { 
+                 id: a.id,
                  name: a.name, 
                  risk: a.risk_score ? a.risk_score.toFixed(2) : '0.00' 
             },
@@ -81,6 +83,24 @@ export default function MapContainer({ areas }: MapContainerProps) {
               'line-width': 2,
             },
           });
+
+          // Clique na área abre Drawer
+          map.on('click', 'areas-layer-fill', (e) => {
+            if (e.features && e.features[0]) {
+              const id = e.features[0].properties.id;
+              if (onAreaClick && id) {
+                onAreaClick(id);
+              }
+            }
+          });
+
+          // Feedback visual de cursor por cima da área
+          map.on('mouseenter', 'areas-layer-fill', () => {
+            map.getCanvas().style.cursor = 'pointer';
+          });
+          map.on('mouseleave', 'areas-layer-fill', () => {
+            map.getCanvas().style.cursor = '';
+          });
         }
     };
 
@@ -89,7 +109,7 @@ export default function MapContainer({ areas }: MapContainerProps) {
     } else {
         map.on('load', renderLayers);
     }
-  }, [areas]);
+  }, [areas, onAreaClick]);
 
   return <div ref={mapContainerRef} className="w-full h-full rounded-lg shadow-md" />;
 }
