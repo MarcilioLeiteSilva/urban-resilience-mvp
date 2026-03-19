@@ -8,7 +8,7 @@ class CommunityReportBase(BaseModel):
     description: str
     status: ReportStatus = ReportStatus.OPEN
     image_url: str | None = None
-    area_id: uuid.UUID
+    area_id: uuid.UUID | None = None
 
 # Entrada de dados GeoJSON Point
 class CommunityReportCreate(CommunityReportBase):
