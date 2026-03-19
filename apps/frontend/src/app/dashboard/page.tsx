@@ -1,7 +1,11 @@
+'use client';
+
+import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import KpiCard from '@/components/dashboard/KpiCard';
 import SidebarPanel from '@/components/dashboard/SidebarPanel';
 import BottomRow from '@/components/dashboard/BottomRow';
+import AreaDetailDrawer from '@/components/dashboard/AreaDetailDrawer';
 
 const AnalyticsRow = dynamic(
   () => import('@/components/dashboard/AnalyticsRow'),
@@ -9,6 +13,13 @@ const AnalyticsRow = dynamic(
 );
 
 export default function DashboardPage() {
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [selectedArea, setSelectedArea] = useState<any>(null);
+
+  const handleOpenDrawer = (area?: any) => {
+    setSelectedArea(area);
+    setDrawerOpen(true);
+  };
   const kpis = [
     { label: 'Áreas Monitoradas', value: 12, delta: { value: 1, type: 'increase', text: 'mês' } },
     { label: 'Áreas Críticas', value: 3, delta: { value: 0, type: 'neutral', text: 'igual' } },
@@ -75,6 +86,8 @@ export default function DashboardPage() {
            <BottomRow />
 
       </main>
+
+      <AreaDetailDrawer isOpen={isDrawerOpen} onClose={() => setDrawerOpen(false)} areaData={selectedArea} />
     </div>
   );
 }
