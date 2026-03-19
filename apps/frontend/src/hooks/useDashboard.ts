@@ -32,7 +32,12 @@ export function useDashboard() {
 
   const fetchDashboard = async () => {
     setLoading(true);
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+    let apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+
+    // Garante compatibilidade de sufixo /api/v1 se o usuário omitiu
+    if (apiUrl && !apiUrl.endsWith('/api/v1') && !apiUrl.endsWith('/api/v1/')) {
+        apiUrl = apiUrl.endsWith('/') ? `${apiUrl}api/v1` : `${apiUrl}/api/v1`;
+    }
 
     try {
       // Executa as chamadas em paralelo
