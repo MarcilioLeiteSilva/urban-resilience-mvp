@@ -6,6 +6,7 @@ import KpiCard from '@/components/dashboard/KpiCard';
 import SidebarPanel from '@/components/dashboard/SidebarPanel';
 import BottomRow from '@/components/dashboard/BottomRow';
 import AreaDetailDrawer from '@/components/dashboard/AreaDetailDrawer';
+import FilterBar from '@/components/dashboard/FilterBar';
 
 const AnalyticsRow = dynamic(
   () => import('@/components/dashboard/AnalyticsRow'),
@@ -55,8 +56,11 @@ export default function DashboardPage() {
       </header>
 
       {/* 2. Main Grid Container */}
-      <main className="flex-1 p-6 space-y-6 max-w-7xl mx-auto w-full">
+      <main className="flex-1 p-6 space-y-4 max-w-7xl mx-auto w-full">
            
+           {/* Filtros Globais */}
+           <FilterBar />
+
            {/* Row 1: KPI Cards */}
            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 {kpis.map((kpi, index) => (
